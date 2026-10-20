@@ -41,7 +41,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gd);outline-offs
 .big{grid-column:1/-1}.big b{font-size:22px}
 .it summary{font-size:13px;font-weight:600;color:var(--mu)}.it details{margin:6px 0}.it details p{margin:2px 0}
 .cd{display:inline-block;color:#fff;border-radius:12px;padding:3px 10px;font-size:13px;font-weight:700;margin:3px 5px 3px 0}
-.step{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.step{display:grid;grid-template-columns:104px 1fr;gap:8px;align-items:center;margin-bottom:8px}
 .seg{display:flex;gap:8px;margin-bottom:10px}
 .seg label{flex:1;text-align:center;border:1px solid var(--bd);border-radius:8px;padding:9px;background:var(--cd)}
 .seg label:has(input:checked){background:var(--al);border-color:var(--gd);font-weight:700}
@@ -134,15 +134,16 @@ td.e{color:var(--mu)}
 </main>
 <script>
 const AV=[["Contrat de travail",2,1],["Avancement d’échelon",2,1],["Avancement de classe",3,1],["Avenant",2,1],["Titulé",1,0],["Intégration",0,0],["Majoration I",0,3],["Bonification",0,3],["RI",4,2],["M.I",2,2],["IIR",0,3],["CNP",0,3]];
-const ST={C:["FOP","VISA","CF","PREFET","SOLDE"],F:["FOP","VISA","CF","PREFET","TANA","FOP","SOLDE"]};
-const SC={FOP:"#1565C0",VISA:"#7B1FA2",CF:"#E65100",PREFET:"#C62828",TANA:"#AD1457",FOP2:"#00838F",SOLDE:"#2E7D32"};
-const sname=(t,i)=>t==="F"&&i===5?"FOP2":ST[t][i];
-const slabel=(t,i)=>sname(t,i)==="FOP2"?"FOP 2":ST[t][i];
+const ST={C:["FOP","VISA","CF","PREFET","SOLDE"],F:["FOP","VISA","CF","FOP VAK","FOP TANA","PREFET","SOLDE"]};
+const SC={FOP:"#1565C0",VISA:"#7B1FA2",CF:"#E65100",PREFET:"#C62828","FOP TANA":"#AD1457","FOP VAK":"#00838F",SOLDE:"#2E7D32"};
+const sname=(t,i)=>ST[t][i];
+const slabel=sname;
 function chips(p){const t=p.ty||"C",c=(p.st||[]).map((v,i)=>v?`<span class="cd" style="background:${SC[sname(t,i)]}">${slabel(t,i)} : ${fmt(v)}</span>`:"").join("");return c?`<div><small class="hint">Circuit ${t==="F"?"Fonctionnaire":"Contractuel"}</small><br>${c}</div>`:'<p>Circuit : tsy mbola natomboka</p>'}
 const $=i=>document.getElementById(i);
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 let G=ld("cnct_grille2",{}),L=ld("cnct_pers",[]),eid=null,gcur="";
 const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){$("msg").textContent="Stockage indisponible : exportez en CSV."}};
+L.forEach(p=>{if(p.ty==="F"&&p.cv!==2){const o=p.st||[];p.st=[o[0]||"",o[1]||"",o[2]||"",o[5]||"",o[4]||"",o[3]||"",o[6]||""];p.cv=2}});
 const fmt=s=>s?s.split("-").reverse().join("/"):"";
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const opts=(arr,sel)=>'<option value="">—</option>'+arr.map(x=>`<option${x===sel?" selected":""}>${esc(x)}</option>`).join("");
@@ -192,7 +193,7 @@ function calc(p){
   if(y){const[Y,m,j]=p.d1.split("-");d2=`${+Y+y}-${m}-${j}`}else d2=p.d2m||"";
   return{d2,c2:p.c1,k2,g2:g,i2:i,note,y};
 }
-function get(){return{hist:((L.find(x=>x.id===eid)||{}).hist)||[],m:{d:$("m_d").value,c:$("m_c").value,k:$("m_k").value,g:$("m_g").value,i:$("m_i").value},id:eid||String(Date.now()),im:$("im").value.trim(),nom:$("nom").value.trim(),d1:$("d1").value,c1:$("c1").value,k1:$("k1").value,ck:ck(),g1:$("g1").value,i1:$("i1").value,av:avv(),d2m:$("d2m").value,ty:ty(),st:[...document.querySelectorAll("[data-s]")].map(x=>x.value)}}
+function get(){return{cv:2,hist:((L.find(x=>x.id===eid)||{}).hist)||[],m:{d:$("m_d").value,c:$("m_c").value,k:$("m_k").value,g:$("m_g").value,i:$("m_i").value},id:eid||String(Date.now()),im:$("im").value.trim(),nom:$("nom").value.trim(),d1:$("d1").value,c1:$("c1").value,k1:$("k1").value,ck:ck(),g1:$("g1").value,i1:$("i1").value,av:avv(),d2m:$("d2m").value,ty:ty(),st:[...document.querySelectorAll("[data-s]")].map(x=>x.value)}}
 const cn=(c,k)=>(c||"")+(k?" › "+k:"");
 function upd(){
   $("kw").hidden=!KL($("c1").value).length;
