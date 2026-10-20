@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="mg"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B2545">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Gestion de personnel CNCT</title>
+<style>
+:root{--nv:#0B2545;--gd:#F2B705;--bg:#F4F6FA;--cd:#fff;--tx:#0B2545;--mu:#5b6b85;--bd:#d5dce8;--ac:#13315C;--al:#FFF1BF;--dg:#b3261e;--am:#1b5e20;--ab:#e8f5e9;--ao:#2E7D32}
+@media (prefers-color-scheme:dark){:root{--bg:#0a1424;--cd:#13233f;--tx:#e8eef7;--mu:#9fb0cc;--bd:#2a3d5f;--ac:#F2B705;--al:#3a3413;--dg:#ff8a80;--am:#8be09a;--ab:#12301a;--ao:#2E7D32;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+#inst{display:block;width:100%;border:0;background:var(--gd);color:var(--nv);font-weight:700;padding:12px;font-size:15px}
+#inst[hidden]{display:none}
+header{background:var(--nv);color:#fff;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 16px;text-align:center;border-bottom:5px solid var(--gd)}
+header small{opacity:.75;display:block;font-size:13px;letter-spacing:.04em}
+h1{margin:3px 0 0;font-size:20px;line-height:1.25;color:var(--gd);letter-spacing:.02em}
+nav{display:flex;gap:8px;padding:12px 12px 4px;max-width:720px;margin:auto}
+nav button{flex:1;padding:11px 4px;border:1px solid var(--bd);background:var(--cd);color:var(--tx);border-radius:10px;font-size:15px;font-weight:600}
+nav button.on{background:var(--nv);border-color:var(--nv);color:var(--gd);box-shadow:inset 0 -3px 0 var(--gd)}
+main{padding:8px 12px 40px;max-width:720px;margin:auto}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:12px}
+section.n{background:var(--ab);border:2px solid var(--ao)}
+h2{font-size:16px;margin:0 0 10px;display:inline-block;border-bottom:2px solid var(--gd);padding-bottom:3px}
+section.n h2{border-bottom-color:var(--ao);color:var(--am)}
+summary{font-weight:700;cursor:pointer;font-size:16px}
+details[open]>summary{margin-bottom:10px}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--mu);margin:10px 0 4px}
+input[type=text],input[type=date],input[type=search],select,textarea{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--cd);color:var(--tx);font-size:16px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gd);outline-offset:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.av{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.av label{display:flex;gap:6px;align-items:center;border:1px solid var(--bd);border-radius:8px;padding:9px;font-size:14px;background:var(--cd)}
+.av label:has(input:checked){background:var(--al);border-color:var(--gd);font-weight:600}
+.nv{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.nv div{background:var(--cd);border:1px solid var(--ao);border-radius:8px;padding:8px}
+.nv small{display:block;color:var(--mu);font-size:12px}.nv b{font-size:17px;color:var(--am)}
+.big{grid-column:1/-1}.big b{font-size:22px}
+.step{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.seg{display:flex;gap:8px;margin-bottom:10px}
+.seg label{flex:1;text-align:center;border:1px solid var(--bd);border-radius:8px;padding:9px;background:var(--cd)}
+.seg label:has(input:checked){background:var(--al);border-color:var(--gd);font-weight:700}
+.seg input{display:none}
+.btn{padding:11px 14px;border-radius:8px;border:0;background:var(--bd);color:var(--tx);font-size:15px;font-weight:600}
+.btn.p{background:var(--gd);color:var(--nv)}.btn.d{background:var(--dg);color:#fff}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.it{background:var(--cd);border:1px solid var(--bd);border-left:5px solid var(--gd);border-radius:10px;padding:12px;margin-bottom:10px}
+.it h3{margin:0;font-size:16px}.it p{margin:3px 0;color:var(--mu);font-size:14px}
+.tag{display:inline-block;background:var(--nv);color:var(--gd);border-radius:12px;padding:2px 10px;font-size:12px;font-weight:700}
+.am{background:var(--ab);border:1px solid var(--ao);color:var(--am);border-radius:8px;padding:6px 8px;font-size:14px;margin:4px 0}
+.hint{font-size:12px;color:var(--mu);margin-top:4px}
+#ok{display:none;background:var(--ab);border:2px solid var(--ao);border-radius:10px;padding:12px;margin-top:10px}
+#ok b{color:var(--am)}
+.gr{display:grid;grid-template-columns:1fr 72px 52px 40px;gap:6px;margin-bottom:6px}
+.tw{overflow-x:auto;border:1px solid var(--bd);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+th{background:var(--nv);color:var(--gd);font-size:12px;white-space:normal;min-width:78px}
+th:first-child,td:first-child{position:sticky;left:0;text-align:left;font-weight:700;background:var(--cd);min-width:84px}
+th:first-child{background:var(--nv)}
+tbody tr:nth-child(even) td{background:var(--bg)}tbody tr:nth-child(even) td:first-child{background:var(--bg)}
+td.e{color:var(--mu)}
+</style></head><body>
+<button id="inst">📲 Installer l’application</button>
+<header><small>Service du Personnel</small><h1>GESTION DE PERSONNEL CNCT</h1></header>
+<nav><button id="t1" class="on">Fiche</button><button id="t2">Liste (<span id="cnt">0</span>)</button><button id="t3">Grille</button></nav>
+<main>
+<div id="v1">
+<section class="c"><h2>Identité</h2>
+<div class="row"><div><label class="f">IM</label><input type="text" id="im" inputmode="numeric"></div>
+<div><label class="f">Nom</label><input type="text" id="nom"></div></div></section>
+
+<section class="c"><h2>Dernière situation</h2>
+<label class="f">Date d’effet</label><input type="date" id="d1">
+<label class="f">Types</label><select id="c1"></select>
+<div id="kw"><label class="f">Catégorie</label><select id="k1"></select></div>
+<div class="row"><div><label class="f">Grade</label><select id="g1"></select></div>
+<div><label class="f">Indice (grille)</label><input type="text" id="i1" readonly></div></div>
+<div class="hint" id="gh"></div></section>
+
+<section class="c"><h2>Type d’avancement</h2><div class="av" id="av"></div>
+<div id="mw" hidden><label class="f">Date d’effet (pas de durée fixe pour ce choix)</label><input type="date" id="d2m"></div></section>
+
+<section class="c n"><h2>Nouvelle position (automatique)</h2>
+<div class="nv">
+<div class="big"><small>À partir du</small><b id="n_d">—</b></div>
+<div><small>Types</small><b id="n_c">—</b></div>
+<div><small>Grade</small><b id="n_g">—</b></div>
+<div class="big"><small>Indice</small><b id="n_i">—</b></div></div>
+<div class="hint" id="n_n"></div></section>
+
+<section class="c"><h2>Circuit de dossier</h2>
+<div class="seg"><label><input type="radio" name="ty" value="C" checked>Contractuel</label><label><input type="radio" name="ty" value="F">Fonctionnaire</label></div>
+<div id="steps"></div></section>
+
+<div class="bar"><button class="btn p" id="sv">Enregistrer</button><button class="btn" id="nw">Nouvelle fiche</button></div>
+<div id="ok"></div><div class="hint" id="msg"></div>
+</div>
+
+<div id="v2" hidden>
+<input type="search" id="q" placeholder="Recherche : IM ou nom" style="margin-bottom:12px">
+<div id="ls"></div>
+<div class="bar"><button class="btn" id="ex">Exporter CSV</button><button class="btn" id="bk">Backup (JSON)</button><label class="btn" for="rs">Hamerina backup</label><input type="file" id="rs" accept=".json,application/json" hidden></div><div class="hint" id="st"></div><div class="hint" id="msg2"></div>
+<div class="hint">Ny angona dia voatahiry ao amin’ity finday ity. Atao CSV tsindraindray ho fanokafana.</div>
+</div>
+
+<div id="v3" hidden>
+<section class="c"><h2>Grille indiciaire</h2>
+<label class="f">Types</label><select id="gty"></select>
+<div class="tw" id="gv" style="margin-top:10px"></div>
+<div class="hint" id="gvh"></div></section>
+<details class="c"><summary>Modifier / ajouter une grille</summary>
+<label class="f">Grille (Types › Catégorie)</label><select id="gc"></select>
+<div class="row" style="margin-top:8px"><input type="text" id="gnew" placeholder="Types vaovao"><input type="text" id="gnewk" placeholder="Catégorie (tsy voatery)"></div><div class="bar"><button class="btn" id="gadd">Ampiana ny grille</button></div>
+<div class="hint">Grade avy ambany hatrany ambony. « Ans » = taona takiana ao amin’ny grade ao alohan’ny hiakatra. Ny « Nouvelle position » dia mandeha amin’ny grade manaraka.</div>
+<div id="gr" style="margin-top:10px"></div>
+<div class="bar"><button class="btn" id="grow">+ Grade</button><button class="btn p" id="gsv">Tahiry</button><button class="btn d" id="gdel">Fafana ity grille ity</button></div></details>
+<details class="c"><summary>Import / Export</summary>
+<div class="hint">Andalana tsirairay : Types;Catégorie;Grade;Indice;Ans</div>
+<textarea id="gt" rows="6" placeholder="Types;Catégorie;Grade;Indice;Ans"></textarea>
+<div class="bar"><button class="btn p" id="gimp">Importer</button><button class="btn" id="gexp">Hamoaka lahatsoratra</button><button class="btn d" id="grst">Averina ny grille de base</button></div></details>
+</div>
+</main>
+<script>
+const AV=[["Contrat de travail",2,0],["Avancement d’échelon",2,1],["Avancement de classe",3,1],["Avenant",2,0],["Titulé",1,0],["Intégration",0,0],["Majoration I",0,0],["Bonification",0,0],["RI",4,2],["M.I",2,2],["IIR",0,0],["CNP",0,0]];
+const ST={C:["FOP","VISA","CF","PREFET","SOLDE"],F:["FOP","VISA","CF","PREFET","TANA","FOP","SOLDE"]};
+const $=i=>document.getElementById(i);
+const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+let G=ld("cnct_grille2",{}),L=ld("cnct_pers",[]),eid=null,gcur="";
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){$("msg").textContent="Stockage indisponible : exportez en CSV."}};
+const fmt=s=>s?s.split("-").reverse().join("/"):"";
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const opts=(arr,sel)=>'<option value="">—</option>'+arr.map(x=>`<option${x===sel?" selected":""}>${esc(x)}</option>`).join("");
+/* Grilles par défaut : clé = Corps|Catégorie ; lignes = grade, indice, années requises */
+const DEF=(()=>{const o={};
+const MG=["ST0E","2C1E","2C2E","2C3E","1C1E","1C2E","1C3E","PR1E","PR2E","PR3E","EX1E","EX2E","EX3E","EX4E","EX5E","EX6E","EX7E","EX8E","EX9E"];
+const M8=[1600,1700,1850,2050,2250,2400,2600,2800,2950,3150,3350,3450,3550,3650,3750,3850,3950,4050,4150];
+const M9=[1750,1850,2000,2200,2400,2550,2750,2950,3100,3300,3500,3600,3700,3800,3900,4000,4100,4200,4300];
+const MY=[1,1,2,2,3,2,2,3,2,2,3,2,2,2,2,2,2,2,2];
+o["Médecins|CAT VIII (A94A)"]=MG.map((g,i)=>({g,i:""+M8[i],y:""+MY[i]}));
+o["Médecins|CAT IX (A94I)"]=MG.map((g,i)=>({g,i:""+M9[i],y:""+MY[i]}));
+const E=[["Auxiliaire I",[260,264,268,276,284,288,292,300,308]],["Auxiliaire II",[276,284,292,304,316,332,348,364,380]],["Auxiliaire III",[356,372,388,404,420,438,455,477,499]],["Auxiliaire IV",[420,438,455,473,499,530,560,591,619]]];
+E.forEach(([k,v])=>o["EFA Auxiliaire|"+k]=v.map((x,j)=>({g:"Échelon "+(j+1),i:""+x,y:"2"})));
+const FG=["STOE","2C1E","2C2E","2C3E","1C1E","1C2E","1C3E","PR1E","PR2E","PR3E","EX1E","EX2E"],FY=[1,1,2,2,3,2,2,3,2,2,3,2];
+const FC=["Cat I (CEPE)","Cat II (BEPC)","Cat III (BAC)","Cat IV (Dipl. 1er cycle)","Cat V (Licence)","Cat VI (Maîtrise)","Cat VII","Cat VIII (DEA)","Cat IX (Doctorat 3e cycle)","Cat X (Doctorat d’État)"];
+const FV=[[275,295,310,350,370,395,415,440,460,490,515,675],[380,415,435,455,490,515,540,570,605,640,675,1020],[500,540,580,620,665,715,765,825,885,950,1020,1550],[605,665,730,800,880,970,1065,1170,1285,1410,1550,1600],[650,710,780,850,930,1020,1115,1220,1335,1460,1600,1750],[750,815,900,970,1055,1145,1250,1360,1480,1610,1750,1850],[850,920,995,1075,1160,1255,1355,1465,1585,1710,1850,2225],[950,1035,1125,1225,1335,1455,1585,1725,1880,2045,2225,2325],[1100,1185,1280,1380,1485,1600,1725,1860,2000,2155,2325,2425],[0,0,0,0,0,1920,2120,2220,2450,2520,2620,0]];
+FV.forEach((col,c)=>o["Fonctionnaire|"+FC[c]]=FG.map((g,j)=>({g,i:""+col[j],y:""+FY[j]})).filter(x=>+x.i));
+return o})();
+if(ld("cnct_seed",0)<2){for(const k in G)if(k.startsWith("EFA Auxiliaires|"))delete G[k];for(const k in DEF)if(!G[k])G[k]=DEF[k];sv("cnct_grille2",G);try{localStorage.setItem("cnct_seed","2")}catch(e){}}
+const KS=()=>Object.keys(G),CL=()=>[...new Set(KS().map(k=>k.split("|")[0]))],KL=c=>KS().filter(k=>k.startsWith(c+"|")).map(k=>k.split("|")[1]),FK=(c,k)=>k?c+"|"+k:c;
+const ind=(c,g)=>((G[c]||[]).find(r=>r.g===g)||{}).i||"";
+const nm=k=>k.replace("|"," › ");
+$("av").innerHTML=AV.map((a,i)=>`<label><input type="radio" name="av" value="${i}">${a[0]}${a[1]?` (${a[1]} an${a[1]>1?"s":""})`:""}</label>`).join("");
+const ty=()=>document.querySelector('input[name=ty]:checked').value;
+const avv=()=>{const r=document.querySelector('input[name=av]:checked');return r?+r.value:null};
+const ck=()=>FK($("c1").value,$("k1").value);
+function steps(v){v=v||[];$("steps").innerHTML=ST[ty()].map((n,i)=>`<div class="step"><b>${n}</b><input type="date" data-s="${i}" value="${v[i]||""}"></div>`).join("")}
+document.querySelectorAll('input[name=ty]').forEach(r=>r.onchange=()=>steps());
+
+function calc(p){
+  if(p.av==null||!p.d1)return null;
+  const a=AV[p.av],arr=G[p.ck]||[],k=arr.findIndex(r=>r.g===p.g1);
+  let g=p.g1,i=ind(p.ck,p.g1)||p.i1,note="",y=a[1];
+  let k2=p.k1;
+  if(a[2]===2){
+    const ks=KL(p.c1),pi=ks.indexOf(p.k1);
+    if(p.c1==="Fonctionnaire"&&((a[0]==="RI"&&p.k1!=="Cat VII")||(a[0]==="M.I"&&!p.k1.startsWith("Cat VIII"))))note="Fampitandremana : RI = Cat VII → VIII ; M.I = Cat VIII → IX. ";
+    if(pi>=0&&pi<ks.length-1){k2=ks[pi+1];const r2=(G[FK(p.c1,k2)]||[]).find(x=>x.g===p.g1);if(r2)i=r2.i;else note+="Grade tsy hita ao amin’ny catégorie manaraka."}
+    else note+="Catégorie farany ity."}
+  if(a[2]===1){
+    if(k>=0&&+arr[k].y)y=+arr[k].y;
+    if(k>=0&&k<arr.length-1){g=arr[k+1].g;i=arr[k+1].i}
+    else note=k<0?"Grade tsy hita ao amin’ny grille.":"Grade farany ao amin’ny grille ity."}
+  let d2="";
+  if(y){const[Y,m,j]=p.d1.split("-");d2=`${+Y+y}-${m}-${j}`}else d2=p.d2m||"";
+  return{d2,c2:p.c1,k2,g2:g,i2:i,note,y};
+}
+function get(){return{id:eid||String(Date.now()),im:$("im").value.trim(),nom:$("nom").value.trim(),d1:$("d1").value,c1:$("c1").value,k1:$("k1").value,ck:ck(),g1:$("g1").value,i1:$("i1").value,av:avv(),d2m:$("d2m").value,ty:ty(),st:[...document.querySelectorAll("[data-s]")].map(x=>x.value)}}
+const cn=(c,k)=>(c||"")+(k?" › "+k:"");
+function upd(){
+  $("kw").hidden=!KL($("c1").value).length;
+  $("i1").value=ind(ck(),$("g1").value);
+  $("gh").textContent=KS().length?"":"Mbola tsy misy grille : fenoy ao amin’ny tab « Grille » aloha.";
+  const a=avv();$("mw").hidden=!(a!=null&&!AV[a][1]);
+  const n=calc(get());
+  $("n_d").textContent=n&&n.d2?fmt(n.d2):"—";$("n_c").textContent=n&&n.c2?cn(n.c2,n.k2):"—";$("n_g").textContent=n&&n.g2||"—";$("n_i").textContent=n&&n.i2||"—";
+  $("n_n").textContent=n?(n.note||(n.y?"Faharetana : "+n.y+" taona":"")):"Fidio ny daty sy ny karazana avancement.";
+  return n;
+}
+const fillK=s=>$("k1").innerHTML=opts(KL($("c1").value),s);
+const fillGrade=s=>$("g1").innerHTML=opts((G[ck()]||[]).map(r=>r.g),s);
+$("c1").onchange=()=>{fillK("");fillGrade("");upd()};
+$("k1").onchange=()=>{fillGrade("");upd()};
+["g1","d1","d2m"].forEach(k=>$(k).onchange=upd);
+$("av").onchange=upd;
+
+function put(p){
+  eid=p?p.id:null;p=p||{};
+  $("c1").innerHTML=opts(CL(),p.c1);fillK(p.k1);fillGrade(p.g1);
+  ["im","nom","d1","d2m"].forEach(k=>$(k).value=p[k]||"");
+  document.querySelectorAll('input[name=av]').forEach(r=>r.checked=(p.av!=null&&+r.value===p.av));
+  document.querySelector(`input[name=ty][value=${p.ty||"C"}]`).checked=true;
+  steps(p.st);$("ok").style.display="none";$("msg").textContent="";upd();
+}
+$("sv").onclick=()=>{
+  const p=get();
+  if(!p.im&&!p.nom){$("msg").textContent="Ampidiro ny IM na ny Nom.";return}
+  p.n=calc(p);
+  const i=L.findIndex(x=>x.id===p.id);if(i>=0)L[i]=p;else L.unshift(p);
+  eid=p.id;sv("cnct_pers",L);cnt();
+  const n=p.n;
+  $("ok").style.display="block";
+  $("ok").innerHTML=`<b>Enregistré ✓</b><br>${esc(p.nom)} (IM ${esc(p.im)})<br>`+(n&&n.d2?`Nouvelle position à partir du <b style="font-size:22px">${fmt(n.d2)}</b><br>${esc(cn(n.c2,n.k2))} · ${esc(n.g2)} · indice ${esc(n.i2)}`:"Nouvelle position : tsy voaisa (fenoy ny daty sy ny karazana avancement).");
+  $("ok").scrollIntoView({behavior:"smooth",block:"center"});
+};
+$("nw").onclick=()=>put(null);
+const cnt=()=>$("cnt").textContent=L.length;
+function show(n){[1,2,3].forEach(i=>{$("v"+i).hidden=i!==n;$("t"+i).className=i===n?"on":""});if(n===2)list();if(n===3)gdraw()}
+$("t1").onclick=()=>show(1);$("t2").onclick=()=>show(2);$("t3").onclick=()=>show(3);
+
+function prog(p){const n=ST[p.ty||"C"];let k=-1;(p.st||[]).forEach((v,i)=>{if(v)k=i});return k<0?"Circuit : tsy mbola natomboka":`Circuit : ${n[k]} (${fmt(p.st[k])})`}
+function list(){
+  const q=$("q").value.toLowerCase().trim();
+  const r=L.filter(p=>!q||(p.im+" "+p.nom).toLowerCase().includes(q));
+  $("ls").innerHTML=r.length?r.map(p=>{const n=p.n;return`<div class="it"><h3>${esc(p.nom)||"(tsy misy anarana)"} <span class="tag">IM ${esc(p.im)}</span></h3>
+  <p>${esc(cn(p.c1,p.k1))} · ${esc(p.g1)} ${p.i1?"· indice "+esc(p.i1):""} ${p.d1?"· "+fmt(p.d1):""}</p>
+  ${n&&n.d2?`<div class="am"><b>${AV[p.av][0]}</b> → <b>${fmt(n.d2)}</b><br>${esc(n.g2)} · indice ${esc(n.i2)}</div>`:""}
+  <p>${prog(p)}</p>
+  <div class="bar"><button class="btn" data-e="${p.id}">Hanova</button><button class="btn d" data-d="${p.id}">Hamafa</button></div></div>`}).join(""):'<p class="hint">Tsy misy fiche.</p>';
+}
+$("q").oninput=list;
+$("ls").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.e){put(L.find(x=>x.id===b.dataset.e));show(1)}
+  else if(b.dataset.d){if(b.dataset.arm){L=L.filter(x=>x.id!==b.dataset.d);sv("cnct_pers",L);cnt();list()}else{b.dataset.arm=1;b.textContent="Confirmer ?"}}};
+$("ex").onclick=()=>{
+  const h=["IM","Nom","Date effet","Types","Catégorie","Grade","Indice","Avancement","Nouvelle date","Nouveau grade","Nouvel indice","Type","Circuit"];
+  const rows=L.map(p=>{const n=p.n||{};return[p.im,p.nom,fmt(p.d1),p.c1,p.k1,p.g1,p.i1,p.av!=null?AV[p.av][0]:"",fmt(n.d2),n.g2,n.i2,p.ty=="F"?"Fonctionnaire":"Contractuel",(p.st||[]).map((v,i)=>v?ST[p.ty||"C"][i]+" "+fmt(v):"").filter(Boolean).join(" | ")]});
+  const csv="\ufeff"+[h,...rows].map(r=>r.map(c=>`"${String(c||"").replace(/"/g,'""')}"`).join(";")).join("\r\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="personnel-cnct.csv";a.click();
+};
+
+/* Grille */
+let gty="";
+function gview(){
+  const cs=CL();if(!cs.includes(gty))gty=cs[0]||"";
+  $("gty").innerHTML=cs.map(c=>`<option${c===gty?" selected":""}>${esc(c)}</option>`).join("");
+  const ks=KL(gty),cols=ks.length?ks:[""],rows=k=>G[FK(gty,k)]||[];
+  const base=[];cols.forEach(k=>rows(k).forEach(r=>{if(!base.includes(r.g))base.push(r.g)}));
+  const yr=g=>{for(const k of cols){const r=rows(k).find(x=>x.g===g);if(r&&r.y)return r.y}return ""};
+  $("gv").innerHTML=base.length?`<table><thead><tr><th>Grade</th>${cols.map(k=>`<th>${esc(k||"Indice")}</th>`).join("")}<th>Ans</th></tr></thead><tbody>${[...base].reverse().map(g=>`<tr><td>${esc(g)}</td>${cols.map(k=>{const r=rows(k).find(x=>x.g===g);return r&&r.i?`<td>${esc(r.i)}</td>`:'<td class="e">—</td>'}).join("")}<td>${esc(yr(g))}</td></tr>`).join("")}</tbody></table>`:'<p class="hint" style="padding:10px">Mbola tsy misy grille.</p>';
+  $("gvh").textContent=gty==="Fonctionnaire"?"RI : Cat VII → VIII (4 ans) · M.I : Cat VIII → IX (2 ans). Ans = taona takiana ao amin’ny grade.":"Ans = taona takiana ao amin’ny grade ao alohan’ny hiakatra.";
+}
+$("gty").onchange=()=>{gty=$("gty").value;gview()};
+function gdraw(){gview();
+  const ks=KS();if(!ks.includes(gcur))gcur=ks[0]||"";
+  $("gc").innerHTML=ks.map(k=>`<option value="${esc(k)}"${k===gcur?" selected":""}>${esc(nm(k))}</option>`).join("");
+  $("gr").innerHTML=(G[gcur]||[]).map((r,i)=>`<div class="gr"><input type="text" data-g="${i}" value="${esc(r.g)}" placeholder="Grade"><input type="text" data-x="${i}" value="${esc(r.i)}" placeholder="Indice" inputmode="numeric"><input type="text" data-y="${i}" value="${esc(r.y)}" placeholder="Ans" inputmode="numeric"><button class="btn d" data-r="${i}">✕</button></div>`).join("");
+}
+function gread(){if(!gcur)return;const q=s=>document.querySelector(s);G[gcur]=[...document.querySelectorAll("[data-g]")].map((e,i)=>({g:e.value.trim(),i:q(`[data-x="${i}"]`).value.trim(),y:q(`[data-y="${i}"]`).value.trim()})).filter(r=>r.g)}
+$("gc").onchange=()=>{gread();gcur=$("gc").value;gdraw()};
+$("gadd").onclick=()=>{const c=$("gnew").value.trim(),k=$("gnewk").value.trim();if(!c)return;gread();const key=FK(c,k);if(!G[key])G[key]=[];gcur=key;$("gnew").value="";$("gnewk").value="";sv("cnct_grille2",G);gdraw()};
+$("grow").onclick=()=>{if(!gcur)return;gread();G[gcur].push({g:"",i:"",y:""});gdraw()};
+$("gr").onclick=e=>{const b=e.target.closest("[data-r]");if(!b)return;gread();G[gcur].splice(+b.dataset.r,1);gdraw()};
+$("gsv").onclick=()=>{gread();sv("cnct_grille2",G);gdraw();$("gsv").textContent="Voatahiry ✓";setTimeout(()=>$("gsv").textContent="Tahiry",1500)};
+$("gdel").onclick=e=>{if(!gcur)return;if(e.target.dataset.arm){delete G[gcur];sv("cnct_grille2",G);e.target.dataset.arm="";e.target.textContent="Fafana ity grille ity";gdraw()}else{e.target.dataset.arm=1;e.target.textContent="Confirmer ?"}};
+$("gimp").onclick=()=>{
+  $("gt").value.split(/\r?\n/).forEach(l=>{const p=l.split(/[;\t]/).map(s=>s.trim());if(p.length<4||!p[0]||!p[2])return;const key=FK(p[0],p[1]);G[key]=G[key]||[];const k=G[key].findIndex(r=>r.g===p[2]);if(k>=0){G[key][k].i=p[3];G[key][k].y=p[4]||G[key][k].y}else G[key].push({g:p[2],i:p[3],y:p[4]||""})});
+  sv("cnct_grille2",G);gdraw();$("gt").value="";
+};
+$("gexp").onclick=()=>{$("gt").value=KS().flatMap(k=>{const[c,t]=k.split("|");return G[k].map(r=>`${c};${t||""};${r.g};${r.i};${r.y||""}`)}).join("\n")};
+$("grst").onclick=e=>{if(e.target.dataset.arm){for(const k in DEF)G[k]=JSON.parse(JSON.stringify(DEF[k]));sv("cnct_grille2",G);e.target.dataset.arm="";e.target.textContent="Averina ny grille de base";gdraw()}else{e.target.dataset.arm=1;e.target.textContent="Confirmer ?"}};
+
+$("bk").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify({v:1,L,G})],{type:"application/json"}));a.download="cnct-backup-"+new Date().toISOString().slice(0,10)+".json";a.click()};
+$("rs").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d.L)L=d.L;if(d.G)G=d.G;sv("cnct_pers",L);sv("cnct_grille2",G);cnt();put(null);list();$("msg2").textContent="Naverina ✓"}catch(x){$("msg2").textContent="Rakitra tsy mety."}};rd.readAsText(f)};
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().then(ok=>{$("st").textContent=ok?"Fitehirizana maharitra ao amin’ny finday ✓":"Voatahiry ao amin’ny finday. Atao backup tsindraindray."}).catch(()=>{});
+/* PWA */
+let dp=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").hidden=false});
+if(matchMedia("(display-mode: standalone)").matches||navigator.standalone)$("inst").hidden=true;
+window.addEventListener("appinstalled",()=>{$("inst").hidden=true});
+$("inst").onclick=async()=>{if(dp){dp.prompt();await dp.userChoice;dp=null}else alert("Tsindrio ny menu ⋮ an’ny Chrome, dia fidio « Installer l’application » na « Ajouter à l’écran d’accueil ».")};
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+put(null);cnt();
+</script></body></html>
