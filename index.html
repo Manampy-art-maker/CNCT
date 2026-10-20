@@ -11,6 +11,7 @@
 :root{--nv:#0B2545;--gd:#F2B705;--bg:#F4F6FA;--cd:#fff;--tx:#0B2545;--mu:#5b6b85;--bd:#d5dce8;--ac:#13315C;--al:#FFF1BF;--dg:#b3261e;--am:#1b5e20;--ab:#e8f5e9;--ao:#2E7D32}
 @media (prefers-color-scheme:dark){:root{--bg:#0a1424;--cd:#13233f;--tx:#e8eef7;--mu:#9fb0cc;--bd:#2a3d5f;--ac:#F2B705;--al:#3a3413;--dg:#ff8a80;--am:#8be09a;--ab:#12301a;--ao:#2E7D32;color-scheme:dark}}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
 #inst{display:block;width:100%;border:0;background:var(--gd);color:var(--nv);font-weight:700;padding:12px;font-size:15px}
 #inst[hidden]{display:none}
@@ -38,7 +39,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--gd);outline-offs
 .nv div{background:var(--cd);border:1px solid var(--ao);border-radius:8px;padding:8px}
 .nv small{display:block;color:var(--mu);font-size:12px}.nv b{font-size:17px;color:var(--am)}
 .big{grid-column:1/-1}.big b{font-size:22px}
-.step{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.it summary{font-size:13px;font-weight:600;color:var(--mu)}.it details{margin:6px 0}.it details p{margin:2px 0}
+.cd{display:inline-block;color:#fff;border-radius:12px;padding:3px 10px;font-size:13px;font-weight:700;margin:3px 5px 3px 0}
+.step{display:grid;grid-template-columns:86px 1fr;gap:8px;align-items:center;margin-bottom:8px}
 .seg{display:flex;gap:8px;margin-bottom:10px}
 .seg label{flex:1;text-align:center;border:1px solid var(--bd);border-radius:8px;padding:9px;background:var(--cd)}
 .seg label:has(input:checked){background:var(--al);border-color:var(--gd);font-weight:700}
@@ -83,12 +86,18 @@ td.e{color:var(--mu)}
 <section class="c"><h2>Type d’avancement</h2><div class="av" id="av"></div>
 <div id="mw" hidden><label class="f">Date d’effet (pas de durée fixe pour ce choix)</label><input type="date" id="d2m"></div></section>
 
-<section class="c n"><h2>Nouvelle position (automatique)</h2>
-<div class="nv">
+<section class="c n"><h2 id="nh">Nouvelle position (automatique)</h2>
+<div class="nv" id="nvbox">
 <div class="big"><small>À partir du</small><b id="n_d">—</b></div>
 <div><small>Types</small><b id="n_c">—</b></div>
 <div><small>Grade</small><b id="n_g">—</b></div>
 <div class="big"><small>Indice</small><b id="n_i">—</b></div></div>
+<div id="mm" hidden>
+<label class="f">À partir du (date d’effet)</label><input type="date" id="m_d">
+<label class="f">Types</label><select id="m_c"></select>
+<div id="m_kw"><label class="f">Catégorie</label><select id="m_k"></select></div>
+<div class="row"><div><label class="f">Grade</label><select id="m_g"></select></div><div><label class="f">Indice</label><input type="text" id="m_i" inputmode="numeric"></div></div>
+<div class="hint">Fenoina tanana ho an’ity safidy ity.</div></div>
 <div class="hint" id="n_n"></div></section>
 
 <section class="c"><h2>Circuit de dossier</h2>
@@ -124,8 +133,12 @@ td.e{color:var(--mu)}
 </div>
 </main>
 <script>
-const AV=[["Contrat de travail",2,0],["Avancement d’échelon",2,1],["Avancement de classe",3,1],["Avenant",2,0],["Titulé",1,0],["Intégration",0,0],["Majoration I",0,0],["Bonification",0,0],["RI",4,2],["M.I",2,2],["IIR",0,0],["CNP",0,0]];
+const AV=[["Contrat de travail",2,1],["Avancement d’échelon",2,1],["Avancement de classe",3,1],["Avenant",2,1],["Titulé",1,0],["Intégration",0,0],["Majoration I",0,3],["Bonification",0,3],["RI",4,2],["M.I",2,2],["IIR",0,3],["CNP",0,3]];
 const ST={C:["FOP","VISA","CF","PREFET","SOLDE"],F:["FOP","VISA","CF","PREFET","TANA","FOP","SOLDE"]};
+const SC={FOP:"#1565C0",VISA:"#7B1FA2",CF:"#E65100",PREFET:"#C62828",TANA:"#AD1457",FOP2:"#00838F",SOLDE:"#2E7D32"};
+const sname=(t,i)=>t==="F"&&i===5?"FOP2":ST[t][i];
+const slabel=(t,i)=>sname(t,i)==="FOP2"?"FOP 2":ST[t][i];
+function chips(p){const t=p.ty||"C",c=(p.st||[]).map((v,i)=>v?`<span class="cd" style="background:${SC[sname(t,i)]}">${slabel(t,i)} : ${fmt(v)}</span>`:"").join("");return c?`<div><small class="hint">Circuit ${t==="F"?"Fonctionnaire":"Contractuel"}</small><br>${c}</div>`:'<p>Circuit : tsy mbola natomboka</p>'}
 const $=i=>document.getElementById(i);
 const ld=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
 let G=ld("cnct_grille2",{}),L=ld("cnct_pers",[]),eid=null,gcur="";
@@ -156,11 +169,13 @@ $("av").innerHTML=AV.map((a,i)=>`<label><input type="radio" name="av" value="${i
 const ty=()=>document.querySelector('input[name=ty]:checked').value;
 const avv=()=>{const r=document.querySelector('input[name=av]:checked');return r?+r.value:null};
 const ck=()=>FK($("c1").value,$("k1").value);
-function steps(v){v=v||[];$("steps").innerHTML=ST[ty()].map((n,i)=>`<div class="step"><b>${n}</b><input type="date" data-s="${i}" value="${v[i]||""}"></div>`).join("")}
+function steps(v){v=v||[];$("steps").innerHTML=ST[ty()].map((n,i)=>`<div class="step"><b class="cd" style="background:${SC[sname(ty(),i)]};text-align:center;margin:0">${slabel(ty(),i)}</b><input type="date" data-s="${i}" value="${v[i]||""}"></div>`).join("")}
 document.querySelectorAll('input[name=ty]').forEach(r=>r.onchange=()=>steps());
 
 function calc(p){
-  if(p.av==null||!p.d1)return null;
+  if(p.av==null)return null;
+  if(AV[p.av][2]===3){const m=p.m||{};return{d2:m.d||"",c2:m.c||"",k2:m.k||"",g2:m.g||"",i2:m.i||"",note:"",y:0}}
+  if(!p.d1)return null;
   const a=AV[p.av],arr=G[p.ck]||[],k=arr.findIndex(r=>r.g===p.g1);
   let g=p.g1,i=ind(p.ck,p.g1)||p.i1,note="",y=a[1];
   let k2=p.k1;
@@ -170,20 +185,22 @@ function calc(p){
     if(pi>=0&&pi<ks.length-1){k2=ks[pi+1];const r2=(G[FK(p.c1,k2)]||[]).find(x=>x.g===p.g1);if(r2)i=r2.i;else note+="Grade tsy hita ao amin’ny catégorie manaraka."}
     else note+="Catégorie farany ity."}
   if(a[2]===1){
-    if(k>=0&&+arr[k].y)y=+arr[k].y;
+    if(a[0].startsWith("Avancement")&&k>=0&&+arr[k].y)y=+arr[k].y;
     if(k>=0&&k<arr.length-1){g=arr[k+1].g;i=arr[k+1].i}
     else note=k<0?"Grade tsy hita ao amin’ny grille.":"Grade farany ao amin’ny grille ity."}
   let d2="";
   if(y){const[Y,m,j]=p.d1.split("-");d2=`${+Y+y}-${m}-${j}`}else d2=p.d2m||"";
   return{d2,c2:p.c1,k2,g2:g,i2:i,note,y};
 }
-function get(){return{id:eid||String(Date.now()),im:$("im").value.trim(),nom:$("nom").value.trim(),d1:$("d1").value,c1:$("c1").value,k1:$("k1").value,ck:ck(),g1:$("g1").value,i1:$("i1").value,av:avv(),d2m:$("d2m").value,ty:ty(),st:[...document.querySelectorAll("[data-s]")].map(x=>x.value)}}
+function get(){return{hist:((L.find(x=>x.id===eid)||{}).hist)||[],m:{d:$("m_d").value,c:$("m_c").value,k:$("m_k").value,g:$("m_g").value,i:$("m_i").value},id:eid||String(Date.now()),im:$("im").value.trim(),nom:$("nom").value.trim(),d1:$("d1").value,c1:$("c1").value,k1:$("k1").value,ck:ck(),g1:$("g1").value,i1:$("i1").value,av:avv(),d2m:$("d2m").value,ty:ty(),st:[...document.querySelectorAll("[data-s]")].map(x=>x.value)}}
 const cn=(c,k)=>(c||"")+(k?" › "+k:"");
 function upd(){
   $("kw").hidden=!KL($("c1").value).length;
   $("i1").value=ind(ck(),$("g1").value);
   $("gh").textContent=KS().length?"":"Mbola tsy misy grille : fenoy ao amin’ny tab « Grille » aloha.";
-  const a=avv();$("mw").hidden=!(a!=null&&!AV[a][1]);
+  const a=avv(),man=a!=null&&AV[a][2]===3;
+  $("mw").hidden=!(a!=null&&!AV[a][1]&&!man);$("mm").hidden=!man;$("nvbox").hidden=man;
+  $("nh").textContent=man?"Nouvelle position (à saisir)":"Nouvelle position (automatique)";
   const n=calc(get());
   $("n_d").textContent=n&&n.d2?fmt(n.d2):"—";$("n_c").textContent=n&&n.c2?cn(n.c2,n.k2):"—";$("n_g").textContent=n&&n.g2||"—";$("n_i").textContent=n&&n.i2||"—";
   $("n_n").textContent=n?(n.note||(n.y?"Faharetana : "+n.y+" taona":"")):"Fidio ny daty sy ny karazana avancement.";
@@ -194,7 +211,20 @@ const fillGrade=s=>$("g1").innerHTML=opts((G[ck()]||[]).map(r=>r.g),s);
 $("c1").onchange=()=>{fillK("");fillGrade("");upd()};
 $("k1").onchange=()=>{fillGrade("");upd()};
 ["g1","d1","d2m"].forEach(k=>$(k).onchange=upd);
-$("av").onchange=upd;
+$("av").onchange=()=>{const a=avv();if(a!=null&&AV[a][2]===3&&!$("m_c").value)mfill({c:$("c1").value,k:$("k1").value,g:"",i:""});upd()};
+const mk=()=>FK($("m_c").value,$("m_k").value);
+function mfill(m){m=m||{};
+  $("m_c").innerHTML=opts(CL(),m.c);
+  $("m_k").innerHTML=opts(KL($("m_c").value),m.k);
+  $("m_kw").hidden=!KL($("m_c").value).length;
+  $("m_g").innerHTML=opts((G[mk()]||[]).map(r=>r.g),m.g);
+  $("m_i").value=m.i||"";
+  if(m.d!==undefined)$("m_d").value=m.d;
+}
+$("m_c").onchange=()=>{mfill({c:$("m_c").value});upd()};
+$("m_k").onchange=()=>{mfill({c:$("m_c").value,k:$("m_k").value});upd()};
+$("m_g").onchange=()=>{$("m_i").value=ind(mk(),$("m_g").value);upd()};
+$("m_d").onchange=upd;$("m_i").oninput=upd;
 
 function put(p){
   eid=p?p.id:null;p=p||{};
@@ -202,17 +232,25 @@ function put(p){
   ["im","nom","d1","d2m"].forEach(k=>$(k).value=p[k]||"");
   document.querySelectorAll('input[name=av]').forEach(r=>r.checked=(p.av!=null&&+r.value===p.av));
   document.querySelector(`input[name=ty][value=${p.ty||"C"}]`).checked=true;
-  steps(p.st);$("ok").style.display="none";$("msg").textContent="";upd();
+  steps(p.st);{const m=p.m||{};mfill({c:m.c,k:m.k,g:m.g,i:m.i,d:m.d||""})}$("ok").style.display="none";$("msg").textContent="";upd();
 }
+const rollMsg=p=>`<b>Enregistré ✓ — SOLDE</b><br>${esc(p.nom)} (IM ${esc(p.im)})<br>La nouvelle position est devenue la <b>dernière situation</b> :<br><b style="font-size:22px">${fmt(p.d1)}</b><br>${esc(cn(p.c1,p.k1))} · ${esc(p.g1)} · indice ${esc(p.i1)}<br><small>Circuit remis à zéro.</small>`+(p.n&&p.n.d2?`<br>Prochaine position : <b>${fmt(p.n.d2)}</b> · ${esc(p.n.g2)} · indice ${esc(p.n.i2)}`:"");
+const hist=p=>p.hist&&p.hist.length?`<details><summary>Historique (${p.hist.length})</summary>${p.hist.map(h=>`<p>${fmt(h.d1)} · ${esc(h.g1)} (${esc(h.i1)}) → ${fmt(h.n.d2)} · ${esc(h.n.g2)} (${esc(h.n.i2)})${h.sd?" · SOLDE "+fmt(h.sd):""}</p>`).join("")}</details>`:"";
 $("sv").onclick=()=>{
   const p=get();
   if(!p.im&&!p.nom){$("msg").textContent="Ampidiro ny IM na ny Nom.";return}
   p.n=calc(p);
+  const last=ST[p.ty].length-1;let rolled=false;
+  if(p.st[last]&&p.n&&p.n.d2&&p.n.g2){
+    p.hist=(p.hist||[]).concat({d1:p.d1,c1:p.c1,k1:p.k1,g1:p.g1,i1:p.i1,av:p.av,n:p.n,sd:p.st[last]});
+    p.d1=p.n.d2;p.c1=p.n.c2;p.k1=p.n.k2||"";p.ck=FK(p.c1,p.k1);p.g1=p.n.g2;p.i1=p.n.i2;
+    p.st=[];p.d2m="";p.m={d:"",c:"",k:"",g:"",i:""};rolled=true;p.n=calc(p);
+  }
   const i=L.findIndex(x=>x.id===p.id);if(i>=0)L[i]=p;else L.unshift(p);
-  eid=p.id;sv("cnct_pers",L);cnt();
+  eid=p.id;sv("cnct_pers",L);cnt();if(rolled)put(p);
   const n=p.n;
   $("ok").style.display="block";
-  $("ok").innerHTML=`<b>Enregistré ✓</b><br>${esc(p.nom)} (IM ${esc(p.im)})<br>`+(n&&n.d2?`Nouvelle position à partir du <b style="font-size:22px">${fmt(n.d2)}</b><br>${esc(cn(n.c2,n.k2))} · ${esc(n.g2)} · indice ${esc(n.i2)}`:"Nouvelle position : tsy voaisa (fenoy ny daty sy ny karazana avancement).");
+  $("ok").innerHTML=rolled?rollMsg(p):`<b>Enregistré ✓</b><br>${esc(p.nom)} (IM ${esc(p.im)})<br>`+(n&&n.d2?`Nouvelle position à partir du <b style="font-size:22px">${fmt(n.d2)}</b><br>${esc(cn(n.c2,n.k2))} · ${esc(n.g2)} · indice ${esc(n.i2)}`:"Nouvelle position : tsy voaisa (fenoy ny daty sy ny karazana avancement).");
   $("ok").scrollIntoView({behavior:"smooth",block:"center"});
 };
 $("nw").onclick=()=>put(null);
@@ -227,16 +265,16 @@ function list(){
   $("ls").innerHTML=r.length?r.map(p=>{const n=p.n;return`<div class="it"><h3>${esc(p.nom)||"(tsy misy anarana)"} <span class="tag">IM ${esc(p.im)}</span></h3>
   <p>${esc(cn(p.c1,p.k1))} · ${esc(p.g1)} ${p.i1?"· indice "+esc(p.i1):""} ${p.d1?"· "+fmt(p.d1):""}</p>
   ${n&&n.d2?`<div class="am"><b>${AV[p.av][0]}</b> → <b>${fmt(n.d2)}</b><br>${esc(n.g2)} · indice ${esc(n.i2)}</div>`:""}
-  <p>${prog(p)}</p>
-  <div class="bar"><button class="btn" data-e="${p.id}">Hanova</button><button class="btn d" data-d="${p.id}">Hamafa</button></div></div>`}).join(""):'<p class="hint">Tsy misy fiche.</p>';
+  ${chips(p)}${hist(p)}
+  <div class="bar"><button class="btn" data-e="${p.id}">Modifier</button><button class="btn d" data-d="${p.id}">Supprimer</button></div></div>`}).join(""):'<p class="hint">Tsy misy fiche.</p>';
 }
 $("q").oninput=list;
 $("ls").onclick=e=>{const b=e.target.closest("button");if(!b)return;
   if(b.dataset.e){put(L.find(x=>x.id===b.dataset.e));show(1)}
   else if(b.dataset.d){if(b.dataset.arm){L=L.filter(x=>x.id!==b.dataset.d);sv("cnct_pers",L);cnt();list()}else{b.dataset.arm=1;b.textContent="Confirmer ?"}}};
 $("ex").onclick=()=>{
-  const h=["IM","Nom","Date effet","Types","Catégorie","Grade","Indice","Avancement","Nouvelle date","Nouveau grade","Nouvel indice","Type","Circuit"];
-  const rows=L.map(p=>{const n=p.n||{};return[p.im,p.nom,fmt(p.d1),p.c1,p.k1,p.g1,p.i1,p.av!=null?AV[p.av][0]:"",fmt(n.d2),n.g2,n.i2,p.ty=="F"?"Fonctionnaire":"Contractuel",(p.st||[]).map((v,i)=>v?ST[p.ty||"C"][i]+" "+fmt(v):"").filter(Boolean).join(" | ")]});
+  const h=["IM","Nom","Date effet","Types","Catégorie","Grade","Indice","Avancement","Nouvelle date","Nouveau grade","Nouvel indice","Type","Circuit","Historique"];
+  const rows=L.map(p=>{const n=p.n||{};return[p.im,p.nom,fmt(p.d1),p.c1,p.k1,p.g1,p.i1,p.av!=null?AV[p.av][0]:"",fmt(n.d2),n.g2,n.i2,p.ty=="F"?"Fonctionnaire":"Contractuel",(p.st||[]).map((v,i)=>v?ST[p.ty||"C"][i]+" "+fmt(v):"").filter(Boolean).join(" | "),(p.hist||[]).map(h=>`${fmt(h.d1)} ${h.g1} -> ${fmt(h.n.d2)} ${h.n.g2} (SOLDE ${fmt(h.sd)})`).join(" || ")]});
   const csv="\ufeff"+[h,...rows].map(r=>r.map(c=>`"${String(c||"").replace(/"/g,'""')}"`).join(";")).join("\r\n");
   const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="personnel-cnct.csv";a.click();
 };
